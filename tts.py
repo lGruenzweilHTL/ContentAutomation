@@ -1,7 +1,6 @@
 import pyttsx3
 from moviepy.editor import VideoFileClip, AudioFileClip
-import os
-from pydub import AudioSegment
+
 
 def get_voices():
     engine = pyttsx3.init()
@@ -43,7 +42,7 @@ def text_to_speech(text, output_file, rate=150, volume=1, voice_id=None):
         return False
 
 
-def add_audio_to_video(video_file, audio_file, output_file):
+def add_audio_to_video(video_file, audio_file, output_file, crop_video=True):
     # Load the video file
     video = VideoFileClip(video_file)
 
@@ -52,6 +51,10 @@ def add_audio_to_video(video_file, audio_file, output_file):
 
     # Set the audio of the video file
     video = video.set_audio(audio)
+
+    # Crop the video to the length of the audio if cropVideo is True
+    if crop_video:
+        video = video.subclip(0, audio.duration)
 
     # Write the result to a new file
     video.write_videofile(output_file, codec='libx264', audio_codec='aac')
