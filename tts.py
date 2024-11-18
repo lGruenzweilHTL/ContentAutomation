@@ -1,36 +1,46 @@
 import pyttsx3
 from moviepy.editor import VideoFileClip, AudioFileClip
+import os
+from pydub import AudioSegment
 
-
-def list_voices():
+def get_voices():
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
+    return voices
+
+
+def get_voice_id(voice_name):
+    voices = get_voices()
     for voice in voices:
-        print(f"ID: {voice.id}\nName: {voice.name}\nLanguages: {voice.languages}\nGender: {voice.gender}\nAge: {voice.age}\n")
+        if voice.name == voice_name:
+            return voice.id
+    return None
 
 
-def text_to_speech(text, output_file, voice_id=None):
+def text_to_speech(text, output_file, rate=150, volume=1, voice_id=None):
     try:
         # Initialize the TTS engine
         engine = pyttsx3.init()
 
         # Set properties (optional)
-        engine.setProperty('rate', 150)  # Speed of speech
-        engine.setProperty('volume', 1)  # Volume (0.0 to 1.0)
-
-        # Set the voice if provided
-        if voice_id:
+        engine.setProperty('rate', rate)  # Speed of speech
+        engine.setProperty('volume', volume)  # Volume (0.0 to 1.0)
+        if voice_id:  # Voice ID
             engine.setProperty('voice', voice_id)
 
         # Save the speech to a file
+        print(f"Saving speech to file: {output_file}")
         engine.save_to_file(text, output_file)
 
         # Run the TTS engine
+        print("Running TTS engine")
         engine.runAndWait()
 
-        return True
+        # Close the engine
+        engine.stop()
     except Exception as e:
-        return e
+        print(f"Error in text_to_speech: {e}")
+        return False
 
 
 def add_audio_to_video(video_file, audio_file, output_file):
@@ -45,3 +55,6 @@ def add_audio_to_video(video_file, audio_file, output_file):
 
     # Write the result to a new file
     video.write_videofile(output_file, codec='libx264', audio_codec='aac')
+
+    audio.close()
+    video.close()
