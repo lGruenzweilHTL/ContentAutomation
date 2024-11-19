@@ -22,7 +22,10 @@ def generate(config):
 
     if use_url:
         # Download the YouTube video
-        ytdownload.download_yt(url, video_path_cp)
+        location = ytdownload.download_yt(url, path)
+
+        # Move the downloaded video to the output folder
+        shutil.move(location, video_path_cp)
     else:
         # Copy the video file to the output folder
         shutil.copy(video_path, video_path_cp)
