@@ -2,6 +2,7 @@ import os
 import shutil
 import ytdownload
 import tts
+import sys
 
 
 def generate(config):
@@ -45,7 +46,7 @@ def generate(config):
     print("Generation complete")
 
     # Exit the program
-    exit(0)
+    sys.exit(0)
 
 
 def create_folder(title):
